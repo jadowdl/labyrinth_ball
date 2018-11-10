@@ -6,6 +6,12 @@
 # "labyrinth_7.png" as an argument. It moves that file into a backup directory
 # after adding a random postfix, then copies "out-<name>" (that is created
 # by makeModelFromSineMap.py) to <name>.
+#
+# Note - Nov 9 2018, James Dowdell
+#
+# I've peeked at this and I don't think we need it, because fbofw we're storing
+# images in git now and that will prevent clobbering.  Easy enough to recreate
+# anyway.
 
 import sys
 import os
