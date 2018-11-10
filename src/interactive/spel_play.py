@@ -1,3 +1,19 @@
+#!/usr/bin/env python2
+
+#########################################
+# (c) 2018 James Dowdell, TSM Games
+#########################################
+
+"""
+It's been almost a decade since I wrote this code.  If I remember right, the
+idea was that it is a playpen to explore "spels", or "spherical pixels."
+A virtual sphere is grided by lines of latitude and longitude, and each
+square cell bordered by two lines of latitude and two lines of longitude
+is extruded up a random height, thus causing the sphere to appear hairy.
+This ball is then rendered in OpenGL in a window, and manipulated by
+keyboard.  It was created mostly to explore the various pyopengl functions.
+"""
+
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from OpenGL.GL import *
@@ -34,45 +50,49 @@ initialDistance =  2 * radius*virtsToEye / virtsWidth
 # distance from surface of sphere, can never get past surface of sphere
 logDistanceE2 = int(math.log(initialDistance-radius)*100)
 
-def init2():
-    ### generic ###
-    glViewport(0,0,400,400)
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    #glOrtho(-50.0, 50.0, -50.0, 50.0, -50, 50.0)
-    glFrustum(-virtsWidth*.5, virtsWidth*.5, 
-              virtsHeight*-.5, virtsHeight*.5, 
-              virtsToEye, 2*initialDistance) # ideally no far plane, rarg...
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-    glColor3f(.8, 0., 0.)
 
-    ### lighting ###
-    glShadeModel (GL_FLAT)
-    glEnable(GL_COLOR_MATERIAL)
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, [1.0, 1.0, 1.0, 1.0])
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, [1.0, 1.0, 1.0, 1.0])
-    # glMaterialfv(GL_FRONT, GL_SPECULAR, [1.0, 1.0, 1.0, 1.0]) # no specular
-    # glMaterialfv(GL_FRONT, GL_SHININESS, [20.0]) 
-    glLightfv(GL_LIGHT0, GL_POSITION, [0, 0.0, initialDistance, 0.0]) # at origin
-    
-    glEnable(GL_LIGHTING)
-    glEnable(GL_LIGHT0)
-    glEnable(GL_DEPTH_TEST)
+def init2():
+  ### generic ###
+  glViewport(0,0,400,400)
+  glMatrixMode(GL_PROJECTION)
+  glLoadIdentity()
+  #glOrtho(-50.0, 50.0, -50.0, 50.0, -50, 50.0)
+  glFrustum(-virtsWidth*.5, virtsWidth*.5, 
+            virtsHeight*-.5, virtsHeight*.5, 
+            virtsToEye, 2*initialDistance) # ideally no far plane, rarg...
+  glMatrixMode(GL_MODELVIEW)
+  glLoadIdentity()
+  glColor3f(.8, 0., 0.)
+
+  ### lighting ###
+  glShadeModel (GL_FLAT)
+  glEnable(GL_COLOR_MATERIAL)
+  glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, [1.0, 1.0, 1.0, 1.0])
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, [1.0, 1.0, 1.0, 1.0])
+  # glMaterialfv(GL_FRONT, GL_SPECULAR, [1.0, 1.0, 1.0, 1.0]) # no specular
+  # glMaterialfv(GL_FRONT, GL_SHININESS, [20.0]) 
+  glLightfv(GL_LIGHT0, GL_POSITION, [0, 0.0, initialDistance, 0.0]) # at origin
+  
+  glEnable(GL_LIGHTING)
+  glEnable(GL_LIGHT0)
+  glEnable(GL_DEPTH_TEST)
+
 
 def square(spin):
-    glClearColor(1., 1., 1., 1.)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPushMatrix();
-    glRotatef(spin, 0.0, 0.0, 1.0);
-    glRectf(-25.0, -25.0, 25.0, 25.0);
-    glPopMatrix();
+  glClearColor(1., 1., 1., 1.)
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glPushMatrix();
+  glRotatef(spin, 0.0, 0.0, 1.0);
+  glRectf(-25.0, -25.0, 25.0, 25.0);
+  glPopMatrix();
+
 
 # assumes min equivalent to max in a modulus scheme, int args
 # forces into range [min, max)
 def fix(coord, min, max):
   return min + (coord-min)%(max-min)
+
 
 # finds cross product of vec<p0, p1> and vec<p0, p2>
 def findNormal(p0, p1, p2):
@@ -84,6 +104,7 @@ def findNormal(p0, p1, p2):
   ret[2] = u[0]*v[1] - u[1]*v[0]
   mag = math.sqrt(ret[0]*ret[0] + ret[1]*ret[1] + ret[2]*ret[2])
   return [-ret[i]/mag for i in range(0, 3)]
+
 
 # each point is a tuple (x,y,z).  Treat first point as anchor
 # and create a fan of triangles.  style is int suggesting color
@@ -101,6 +122,7 @@ def makeConvexPolygon(style, points):
     glVertex3f(p[0], p[1], p[2])
   glEnd()
 
+
 # lng, lat are in degrees, convert to radians
 def convertFromSphereSurfaceToAbsolute(point):
   global radius
@@ -113,12 +135,14 @@ def convertFromSphereSurfaceToAbsolute(point):
   #z = math.sqrt(minor_radius*minor_radius - x*x);
   return (x,y,z)
   
+
 # each point is a (lng, lat, height from base) on the sphere
 # convert to (x,y,z), pass to makeConvexPolygon().  Style is int
 # suggesting color.
 def makeSphereSurfaceConvexPolygon(style, points):
   new_points = [convertFromSphereSurfaceToAbsolute(p) for p in points]
   makeConvexPolygon(style, new_points)
+
 
 # ll = lower left
 # ur = upper right
@@ -130,8 +154,10 @@ def printConnector(name, style, lllng, lllat, llalt, urlng, urlat, uralt, fixEdg
            (urlng, urlat, uralt),
            (lllng, urlat, uralt if fixEdge else llalt)])
 
+
 heights_map = {}
 ids_map = {}
+
 
 def makeSphere():
   global height_maps
@@ -146,6 +172,7 @@ def makeSphere():
       heights_map[(lnge2, late2)] = radius*.1 *  random.random()
       ids_map[(lnge2, late2)] = id
       id+=1
+
 
 def drawSphere_():
   global height_maps
@@ -204,94 +231,96 @@ def drawSphere_():
             curLng, curLat, altitude,
             eastLng, curLat, heights_map[ lnge2, southLatE2], True)
 
+
 def drawCachedSphere():
-    global displayListHandle
-    glCallList(displayListHandle)
+  global displayListHandle
+  glCallList(displayListHandle)
+
 
 def drawSphere():
-    global displayListHandle
-    print "drawSphere"
-    displayListHandle = glGenLists(1)
-    print "Gen",displayListHandle
-    glNewList(displayListHandle, GL_COMPILE_AND_EXECUTE)
-    drawSphere_()
-    glEndList()
+  global displayListHandle
+  print "drawSphere"
+  displayListHandle = glGenLists(1)
+  print "Gen",displayListHandle
+  glNewList(displayListHandle, GL_COMPILE_AND_EXECUTE)
+  drawSphere_()
+  glEndList()
 
 
-
-
-
-
-
-
+################################################################################
 
 xrot = 0
 yrot = 0
 zrot = 0
 
 def keyboardCallback(char, x, y):
-    global xrot
-    global yrot
-    global zrot
-    global logDistanceE2
-    print char, xrot, yrot, zrot, logDistanceE2
-    if(char == 'q'):
-        xrot += 1
-    if(char == 'z'):
-        xrot -= 1
-    if(char == 'w'):
-        yrot += 1
-    if(char == 'x'):
-        yrot -= 1
-    if(char == 'e'):
-        zrot += 1
-    if(char == 'c'):
-        zrot -= 1
-    if(char == 'r'):
-        logDistanceE2 += 1
-    if(char == 'v'):
-        logDistanceE2 -= 1
+  global xrot
+  global yrot
+  global zrot
+  global logDistanceE2
+  print char, xrot, yrot, zrot, logDistanceE2
+  if(char == 'q'):
+    xrot += 1
+  if(char == 'z'):
+    xrot -= 1
+  if(char == 'w'):
+    yrot += 1
+  if(char == 'x'):
+    yrot -= 1
+  if(char == 'e'):
+    zrot += 1
+  if(char == 'c'):
+    zrot -= 1
+  if(char == 'r'):
+    logDistanceE2 += 1
+  if(char == 'v'):
+    logDistanceE2 -= 1
+
+
 d = 0
 def displayCallback():
-    global xrot
-    global yrot
-    global zrot
-    global logDistanceE2
-    global d
-    if(d == 0):
-        init2()
-        makeSphere()
-    #print d 
+  global xrot
+  global yrot
+  global zrot
+  global logDistanceE2
+  global d
+  if(d == 0):
+    init2()
+    makeSphere()
+  #print d 
 
-    glClearColor(0., 0., 0., 0.)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPushMatrix();
-    #glTranslatef(0.0,0.0,-initialDistance + logDistanceE2*10000000.0);
-    glTranslatef(0.0,0.0, radius - math.e**(logDistanceE2/100.0));
-    #glTranslatef(0.0,0.0, -initialDistance)
-    glRotatef(xrot, 1.0, 0.0, 0.0);
-    glRotatef(yrot, 0.0, 1.0, 0.0);
-    glRotatef(zrot, 0.0, 0.0, 1.0);
-    
-    if(d == 0):
-      drawSphere()
-    else:
-      drawCachedSphere()
-    # glColor3f(0.,1.,0.)
-    # glutSolidSphere(radius, 10000, 10000);
-    glPopMatrix();
-    glFlush();
-    glutSwapBuffers()
-    glutPostRedisplay()
-    d+=1
+  glClearColor(0., 0., 0., 0.)
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glPushMatrix();
+  #glTranslatef(0.0,0.0,-initialDistance + logDistanceE2*10000000.0);
+  glTranslatef(0.0,0.0, radius - math.e**(logDistanceE2/100.0));
+  #glTranslatef(0.0,0.0, -initialDistance)
+  glRotatef(xrot, 1.0, 0.0, 0.0);
+  glRotatef(yrot, 0.0, 1.0, 0.0);
+  glRotatef(zrot, 0.0, 0.0, 1.0);
+  
+  if(d == 0):
+    drawSphere()
+  else:
+    drawCachedSphere()
+  # glColor3f(0.,1.,0.)
+  # glutSolidSphere(radius, 10000, 10000);
+  glPopMatrix();
+  glFlush();
+  glutSwapBuffers()
+  glutPostRedisplay()
+  d+=1
+
 
 def init():
-    glutInit(name)
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-    glutInitWindowSize(height, width)
-    glutCreateWindow(name)
-    glutKeyboardFunc(keyboardCallback)
-    glutDisplayFunc(displayCallback)
-    glutMainLoop()
+  glutInit(name)
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
+  glutInitWindowSize(height, width)
+  glutCreateWindow(name)
+  glutKeyboardFunc(keyboardCallback)
+  glutDisplayFunc(displayCallback)
+  glutMainLoop()
 
-init()
+
+if __name__ == "__main__":
+  init()
