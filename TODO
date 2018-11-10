@@ -5,3 +5,5 @@ README.md
   - include setting up virtualenv, initializing the python virtual environment, and sourcing pip_requirements.txt
   - `python labyrinth_ball/interactive/spel_play.py`
   - `python labyrinth_ball/interactive/james_quickie_ball.py`
+remove old/
+add some tests to tests/, and detail finding code coverage via `coverage run` and `coverage html`
