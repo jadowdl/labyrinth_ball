@@ -9,10 +9,12 @@ from OpenGL.GLU import *
 from PIL import Image
 import sys
 import os
-from utils import *
+from labyrinth_ball.common.spherical_utils import *
+from labyrinth_ball.common.gl_utils import *
 from math import pi, cos, sin, sqrt, pow
 import numpy
-from ArcBall import *
+from labyrinth_ball.common.arc_ball import *
+import labyrinth_ball.res as res
 from scipy.interpolate import interp1d
 import random
 
@@ -564,7 +566,7 @@ def loadSinusoidalMapAsTexture(filename):
 	(width, height) = image.size
 	image = image.convert("RGB")
 
-	image_data = image.tostring("raw", "RGB", 0, -1)
+	image_data = image.tobytes("raw", "RGB", 0, -1)
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB,
 		GL_UNSIGNED_BYTE, image_data)
 
@@ -622,8 +624,8 @@ def displayPoints():
 	glutSpecialFunc(onSpecialKey)
 
 	loadSinusoidalMapAsTexture(sys.argv[1])
-	programDir = os.path.dirname(os.path.abspath(sys.argv[0]))
-	sphereModel = loadModel(os.path.join(programDir, "sinusoidal_sphere.3d"))
+        resDir = os.path.abspath(res.__path__[0]) 
+	sphereModel = loadModel(os.path.join(resDir, "sinusoidal_sphere.3d"))
 
 	glutMainLoop()
 
