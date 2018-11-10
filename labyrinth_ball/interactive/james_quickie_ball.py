@@ -4,13 +4,22 @@
 # (c) 2018 James Dowdell, TSM Games
 #########################################
 
+"""
+Seems to be a copy/hack/paste of spelPlay.py, which makes somewhat broken use
+of the ArcBall class from common, and defines a very rudimentary labyrinth ball
+in code via "drawRoutine()", which it displays in a popup window.  The name
+of this file implies that it was simply intended to be a throwaway scratch work
+sort of test of the labyrinth ball concept - this file was originally written 7 years
+ago and I'm not entirely sure what was up at the time.
+"""
+
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from OpenGL.GL import *
 import random
 import math
 
-from src.common.arc_ball import *
+from labyrinth_ball.common.arc_ball import *
 
 name = "Dumb"
 
