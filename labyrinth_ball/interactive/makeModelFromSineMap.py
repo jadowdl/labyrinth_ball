@@ -1,6 +1,23 @@
+#!/usr/bin/env python2
+
 #########################################
 # (c) 2011 Evan Mallory, TSM Games
-#
+# (c) 2018 James Dowdell, TSM Games
+#########################################
+
+# TODO - convert this file to the two-spaces ident used elsewhere.
+
+"""
+The exact purpose and nature of this file has been forgotten.
+
+Here's what I know for sure:
+
+Takes a 2D routing png file with special magenta, yellow, and green dots,
+such as the infamous "deathStar" from res/, and converts it to its
+spherical-coordinate projected form, and displays it.  You can also
+write this to some sort of properietary file format by then pressing e,
+still researching what this was for...
+"""
 
 from OpenGL.GLUT import *
 from OpenGL.GL import *
