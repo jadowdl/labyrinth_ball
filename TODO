@@ -1,0 +1,7 @@
+clean up spelPlay.py against james_quickie_ball.py
+move implicit tests in util.py to tests/
+actually spec out a setup.py, that makes use of pip_requirements.txt
+README.md
+  - include setting up virtualenv, initializing the python virtual environment, and sourcing pip_requirements.txt
+  - `python labyrinth_ball/interactive/spel_play.py`
+  - `python labyrinth_ball/interactive/james_quickie_ball.py`
